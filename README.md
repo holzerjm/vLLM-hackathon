@@ -19,6 +19,19 @@ launchable-configs/
   tier3-deep-tech/                       # 4x A100 80GB — distributed inference, llm-d, K8s
     setup.sh                             #   Brev setup script (full llm-d stack, kind, k9s)
     BREV_CONFIG.md                       #   Brev console configuration steps
+demo/                                    # ZeroClaw code assistant demo
+  config.ollama.toml                     #   ZeroClaw config for laptop (Ollama backend)
+  config.vllm.toml                       #   ZeroClaw config for GPU instance (vLLM backend)
+  install.sh                             #   One-command setup for laptop
+  skills/                                #   ZeroClaw skill definitions
+    code-explain.md                      #     Explain code (local)
+    code-refactor.md                     #     Refactor code (local)
+    code-review.md                       #     Quick code review (local)
+    architecture-review.md               #     Deep architecture review (cloud)
+    security-audit.md                    #     Security audit (cloud)
+  examples/
+    sample_code.py                       #   Sample Python file with intentional issues
+    walkthrough.md                       #   Step-by-step demo script
 ```
 
 ## Tiers at a glance
@@ -51,7 +64,27 @@ Distribute the Launchable links to attendees along with the [Attendee Guide](att
 - Quick-start recipes for each of the 6 hackathon tracks
 - Troubleshooting common issues
 
-### 3. Estimate costs
+### 3. Run the ZeroClaw code assistant demo
+
+The [`demo/`](demo/) directory contains a ready-to-run code assistant that shows how quantized local LLMs handle everyday coding tasks (explain, refactor, review) while automatically routing complex reasoning (architecture review, security audit) to a cloud model like Claude.
+
+**On a laptop (Ollama):**
+```bash
+cd demo && bash install.sh
+export ANTHROPIC_API_KEY="sk-ant-..."
+zeroclaw start
+```
+
+**On a Brev GPU instance (vLLM):**
+```bash
+cp demo/config.vllm.toml ~/.zeroclaw/config.toml
+cp demo/skills/*.md ~/.zeroclaw/workspace/skills/
+zeroclaw start
+```
+
+See the full [demo walkthrough](demo/examples/walkthrough.md) for a guided script attendees can follow.
+
+### 4. Estimate costs
 
 Open `hackathon-gpu-cost-estimate.xlsx` to review and adjust GPU instance costs based on expected team count and session duration.
 
@@ -68,5 +101,7 @@ Open `hackathon-gpu-cost-estimate.xlsx` to review and adjust GPU instance costs 
 
 - [vLLM Documentation](https://docs.vllm.ai/)
 - [llm-d Documentation](https://llm-d.ai/docs/)
+- [ZeroClaw](https://github.com/zeroclaw-labs/zeroclaw)
+- [Ollama](https://ollama.com/)
 - [NVIDIA Brev Console](https://brev.nvidia.com/)
 - [Brev Launchables Docs](https://docs.nvidia.com/brev/concepts/launchables)
