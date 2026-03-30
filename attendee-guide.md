@@ -1,0 +1,181 @@
+# TOA vLLM / LLM-D Hackathon — Attendee Environment Guide
+
+**Date:** April 25, 2026 | **Location:** The Open Accelerator, Fortpoint, Boston
+
+---
+
+## Getting Started (< 2 minutes)
+
+Every team gets a pre-configured GPU cloud instance on NVIDIA Brev — no local setup required. Your mentor will share a Launchable link for your track. Click it, sign in to Brev, and you'll have a running environment with models pre-loaded and tools installed.
+
+Once your instance is up:
+
+```bash
+# 1. Validate everything is working
+bash /workspace/test_setup.sh
+
+# 2. Start the LLM server
+bash /workspace/start_vllm_server.sh    # (Tier 1)
+bash /workspace/serving/serve_8b_baseline.sh  # (Tier 2/3)
+
+# 3. Test it
+python3 /workspace/test_client.py
+```
+
+Your vLLM server exposes an **OpenAI-compatible API** at `http://localhost:8000/v1` — use it with any OpenAI client library, LangChain, or plain HTTP requests.
+
+---
+
+## Choose Your Environment
+
+| | **Tier 1: App Builder** | **Tier 2: Performance** | **Tier 3: Deep Tech** |
+|---|---|---|---|
+| **GPU** | 1× L40S (48GB) | 2× A100 80GB | 4× A100 80GB |
+| **Models** | Llama 3.1 8B | 8B + 70B | 8B + 70B |
+| **Best for** | RAG, apps, products | Quantization, speculative decoding, benchmarking | Distributed inference, llm-d, K8s |
+| **Tracks** | 2 (RAG), 5 (BYOP), 6 (Eval) | 1 (Lean Inference), 3 (Spec Decode), 6 (Eval) | 4 (Inference at Scale), 1 & 3 (Deep Tech lane) |
+| **Skill lane** | Starter / Builder | Builder / Deep Tech | Deep Tech |
+
+**Not sure which to pick?** If you want to build an app or demo, go Tier 1. If you want to make models faster, go Tier 2. If you want to run a distributed inference cluster, go Tier 3.
+
+---
+
+## What's Pre-Installed
+
+### All Tiers
+- Python 3.11+, CUDA, PyTorch
+- vLLM (latest) — LLM serving engine
+- Llama 3.1 8B Instruct — pre-downloaded, ready to serve
+- guidellm, lm-eval — evaluation and load testing
+- llm-compressor — model quantization
+- Jupyter Lab (accessible via Brev one-click)
+
+### Tier 1 Additionally
+- LangChain + ChromaDB + BGE embedding model (for RAG)
+- FastAPI app scaffold at `/workspace/app-scaffold/`
+- Gradio (for quick UI prototyping)
+
+### Tier 2 Additionally
+- Llama 3.1 70B Instruct — pre-downloaded
+- AutoGPTQ, AutoAWQ — quantization backends
+- Benchmarking scripts at `/workspace/benchmarks/`
+- Speculative decoding config at `/workspace/benchmarks/speculative_decoding.sh`
+- nvtop, py-spy — GPU and profiling tools
+
+### Tier 3 Additionally
+- Everything in Tier 2, plus:
+- kubectl, Helm, kind, k9s — full Kubernetes stack
+- llm-d repo with Helm charts at `/workspace/llm-d/`
+- Pre-built llm-d deployment configs at `/workspace/llm-d-configs/`
+- Disaggregated prefill/decode configuration for 70B
+- Inference monitoring dashboard
+
+---
+
+## Quick Recipes by Track
+
+### Track 1: Lean Inference Challenge (Quantization)
+```bash
+# Quantize the 8B model to 4-bit GPTQ
+python3 /workspace/benchmarks/quantize_model.py
+
+# Benchmark original vs quantized
+bash /workspace/benchmarks/bench_throughput.sh /models/llama-3.1-8b-instruct
+bash /workspace/benchmarks/bench_throughput.sh /models/llama-3.1-8b-instruct-gptq-4bit
+```
+
+### Track 2: RAG on Open Inference
+```python
+# Your vLLM server is the LLM backend — connect LangChain to it
+from langchain_community.llms import VLLMOpenAI
+
+llm = VLLMOpenAI(
+    openai_api_base="http://localhost:8000/v1",
+    model_name="/models/llama-3.1-8b-instruct",
+    openai_api_key="not-needed"
+)
+```
+
+### Track 3: Speculative Futures
+```bash
+# Start 70B with 8B as draft model
+bash /workspace/benchmarks/speculative_decoding.sh
+
+# Compare latency: 70B normal vs 70B with speculation
+bash /workspace/benchmarks/bench_throughput.sh /models/llama-3.1-70b-instruct 50 2
+```
+
+### Track 4: Inference at Scale
+```bash
+# Spin up a local K8s cluster
+bash /workspace/scripts/start_kind_cluster.sh
+
+# Deploy llm-d with the 8B model
+bash /workspace/scripts/deploy_llm_d.sh /workspace/llm-d-configs/values-8b.yaml
+
+# Scale to 70B with disaggregated serving
+bash /workspace/scripts/deploy_llm_d.sh /workspace/llm-d-configs/values-70b-distributed.yaml
+```
+
+### Track 5: BYOP — Build Your Own Product
+```bash
+# Start the LLM backend
+bash /workspace/start_vllm_server.sh
+
+# Start the app scaffold
+cd /workspace/app-scaffold && bash run.sh
+
+# Your app is at http://localhost:8080
+# Edit main.py to build your product!
+```
+
+### Track 6: Performance Tuning & Evaluation
+```bash
+# Run lm-eval benchmarks
+lm_eval --model vllm \
+    --model_args pretrained=/models/llama-3.1-8b-instruct \
+    --tasks hellaswag,arc_easy \
+    --batch_size auto
+
+# Load test with guidellm
+guidellm --target http://localhost:8000/v1 --model /models/llama-3.1-8b-instruct
+```
+
+---
+
+## Accessing Your Environment
+
+- **Jupyter:** Click "Open Jupyter" in the Brev console — no extra setup
+- **SSH:** Use the Brev CLI (`brev shell <instance-name>`) or the SSH command shown in the Brev console
+- **API endpoint:** Exposed via Cloudflare tunnel — the URL appears in the Brev console under Networking
+- **AI coding tools:** Cursor, Copilot, and Claude are all encouraged — connect them via SSH remote to your Brev instance
+
+---
+
+## Troubleshooting
+
+**vLLM server won't start / OOM error:**
+Reduce `--max-model-len` (try 4096 or 2048) or lower `--gpu-memory-utilization` to 0.80.
+
+**Model download seems stuck:**
+Models are pre-cached. If they're missing, run: `huggingface-cli download meta-llama/Llama-3.1-8B-Instruct --local-dir /models/llama-3.1-8b-instruct`
+
+**Can't access the API externally:**
+Check the Cloudflare tunnel URL in the Brev console. If using port-forwarding: `ssh -L 8000:localhost:8000 <your-brev-ssh-command>`
+
+**GPU not detected:**
+Run `nvidia-smi`. If it fails, your instance may still be provisioning — wait 1-2 minutes and retry.
+
+**Need help?** Raise your hand — core vLLM and llm-d committers are here as mentors.
+
+---
+
+## Useful Links
+
+- [vLLM Documentation](https://docs.vllm.ai/)
+- [vLLM GitHub](https://github.com/vllm-project/vllm)
+- [llm-d Documentation](https://llm-d.ai/docs/)
+- [llm-d GitHub](https://github.com/llm-d/llm-d)
+- [NVIDIA Brev Console](https://brev.nvidia.com/)
+- [Brev Launchables Docs](https://docs.nvidia.com/brev/concepts/launchables)
+- [Llama 3.1 Model Card](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct)
