@@ -152,6 +152,29 @@ guidellm --target http://localhost:8000/v1 --model /models/llama-3.1-8b-instruct
 
 ---
 
+## Bonus: Run an LLM on Your Laptop with ZeroClaw
+
+Want to see what quantization can do? The **ZeroClaw Code Assistant demo** runs a quantized Llama 3.1 8B (~4.5 GB) directly on your laptop — no GPU, no cloud, no cost for most tasks. Complex requests (architecture review, security audit) automatically route to a cloud model.
+
+```bash
+# From the repo's demo/ directory
+bash install.sh
+export ANTHROPIC_API_KEY="sk-ant-..."   # only needed for cloud-routed tasks
+zeroclaw start
+```
+
+**On your Brev GPU instance**, you can use vLLM as the backend instead of Ollama for faster inference:
+
+```bash
+cp demo/config.vllm.toml ~/.zeroclaw/config.toml
+cp demo/skills/*.md ~/.zeroclaw/workspace/skills/
+zeroclaw start
+```
+
+See the full [demo walkthrough](demo/examples/walkthrough.md) for a guided script with sample code to try.
+
+---
+
 ## Troubleshooting
 
 **vLLM server won't start / OOM error:**
@@ -179,3 +202,5 @@ Run `nvidia-smi`. If it fails, your instance may still be provisioning — wait 
 - [NVIDIA Brev Console](https://brev.nvidia.com/)
 - [Brev Launchables Docs](https://docs.nvidia.com/brev/concepts/launchables)
 - [Llama 3.1 Model Card](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct)
+- [ZeroClaw](https://github.com/zeroclaw-labs/zeroclaw)
+- [Ollama](https://ollama.com/)
