@@ -177,12 +177,33 @@ See the full [demo walkthrough](demo/examples/walkthrough.md) for a guided scrip
 
 ## Starter Projects
 
-Not sure what to build? We have complete, runnable starter projects for every skill level. Each includes all scripts, configs, and sample data you need.
+Not sure what to build? We have complete, runnable starter projects organized by topic. Each includes all scripts, configs, and sample data you need.
+
+### RAG & Application Building
 
 | Level | Project | Directory | What You'll Build |
 |---|---|---|---|
 | **Beginner** | Ask My Docs | [`projects/beginner-ask-my-docs/`](projects/beginner-ask-my-docs/) | RAG Q&A app with Gradio + ChromaDB |
 | **Intermediate** | Speed Demon | [`projects/intermediate-speed-demon/`](projects/intermediate-speed-demon/) | Speculative decoding benchmark suite with charts |
+
+### Quantization (Model Compression)
+
+| Level | Project | Directory | What You'll Build |
+|---|---|---|---|
+| **Beginner** | Shrink to Fit | [`projects/beginner-shrink-to-fit/`](projects/beginner-shrink-to-fit/) | Compare full vs. 4-bit quantized model side-by-side |
+| **Intermediate** | Compress & Compare | [`projects/intermediate-compress-and-compare/`](projects/intermediate-compress-and-compare/) | Quantize with GPTQ/AWQ, benchmark quality vs. speed |
+
+### Reinforcement Learning (RLHF / DPO)
+
+| Level | Project | Directory | What You'll Build |
+|---|---|---|---|
+| **Beginner** | Reward Ranker | [`projects/beginner-reward-ranker/`](projects/beginner-reward-ranker/) | Collect human preferences, train a reward model |
+| **Intermediate** | Align It | [`projects/intermediate-align-it/`](projects/intermediate-align-it/) | DPO fine-tuning with LoRA adapters |
+
+### Distributed Inference *(Aspirational)*
+
+| Level | Project | Directory | What You'll Build |
+|---|---|---|---|
 | **Advanced** | Infinite Scale | [`projects/advanced-infinite-scale/`](projects/advanced-infinite-scale/) | Disaggregated inference on K8s with autoscaling |
 
 See [`hackathon-project-suggestions.md`](hackathon-project-suggestions.md) for full details, recommended configurations, and extension ideas.

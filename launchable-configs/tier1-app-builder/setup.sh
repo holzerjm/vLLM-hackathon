@@ -37,6 +37,9 @@ pip install --break-system-packages -q \
     guidellm \
     lm-eval \
     llmcompressor \
+    trl \
+    peft \
+    datasets \
     jupyter \
     ipywidgets \
     pandas \
@@ -196,6 +199,8 @@ check "Model weights present"     "test -d /models/llama-3.1-8b-instruct"
 check "Embedding model present"   "test -d /models/bge-small-en"
 check "LangChain installed"       "python3 -c 'import langchain'"
 check "ChromaDB installed"        "python3 -c 'import chromadb'"
+check "TRL installed"             "python3 -c 'import trl'"
+check "PEFT installed"            "python3 -c 'import peft'"
 check "guidellm installed"        "python3 -c 'import guidellm'"
 check "llm-compressor installed"  "python3 -c 'import llmcompressor'"
 
