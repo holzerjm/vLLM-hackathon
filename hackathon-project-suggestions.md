@@ -2,6 +2,8 @@
 
 One project per proficiency level, each mapped to a pre-configured Brev tier with ready-to-use tooling.
 
+Each project includes complete, runnable code in the [`projects/`](projects/) directory.
+
 ---
 
 ## Beginner: "Ask My Docs" — RAG-Powered Q&A App
@@ -35,20 +37,23 @@ A Retrieval-Augmented Generation app that lets users upload documents (PDFs, mar
 
 ```bash
 # 1. Start the vLLM server
-bash /workspace/scripts/start_vllm_server.sh
+bash /workspace/start_vllm_server.sh
 
-# 2. Verify it's running
-python3 /workspace/scripts/test_client.py
+# 2. Ingest the sample documents into ChromaDB
+cd projects/beginner-ask-my-docs
+python3 ingest.py
 
-# 3. Build from the app scaffold
-cd /workspace/app-scaffold
-# Edit main.py to add ChromaDB ingestion + retrieval chain
+# 3. Launch the Gradio Q&A app
+python3 app.py
+# Open http://localhost:7860
 ```
 
-### Key Files
+### Project Files
 
-- `launchable-configs/tier1-app-builder/setup.sh` — see what's pre-installed
-- `attendee-guide.md` — Track 2 (RAG) quick recipe
+See [`projects/beginner-ask-my-docs/`](projects/beginner-ask-my-docs/) for the complete implementation:
+- `app.py` — Gradio UI + RAG pipeline
+- `ingest.py` — Document ingestion into ChromaDB
+- `sample-docs/` — Example documents to test with
 
 ---
 
@@ -84,20 +89,29 @@ A comparative benchmark suite that measures Llama 3.1 70B inference **with and w
 ### Getting Started
 
 ```bash
-# 1. Run the baseline (no speculation) — record throughput & latency
-bash /workspace/scripts/bench_throughput.sh
+cd projects/intermediate-speed-demon
 
-# 2. Launch with speculative decoding
-bash /workspace/scripts/speculative_decoding.sh
+# Option A: Run the full suite (baseline → speculative → charts)
+bash run_benchmark_suite.sh
 
-# 3. Re-run benchmarks and compare
-# 4. Vary --num-speculative-tokens (3, 5, 7) and plot the results
+# Option B: Run individually
+bash benchmark_baseline.sh          # 70B without speculation
+bash benchmark_speculative.sh       # 70B with 8B draft (K=5)
+python3 plot_results.py             # Generate comparison charts
+
+# Option C: Sweep speculation depth (K=1,3,5,7,9)
+python3 sweep_spec_tokens.py
+python3 plot_results.py
 ```
 
-### Key Files
+### Project Files
 
-- `launchable-configs/tier2-performance/setup.sh` — see `speculative_decoding.sh` and `bench_throughput.sh`
-- `attendee-guide.md` — Track 3 (Speculative Futures) and Track 6 (Performance Tuning) recipes
+See [`projects/intermediate-speed-demon/`](projects/intermediate-speed-demon/) for the complete implementation:
+- `run_benchmark_suite.sh` — Full pipeline orchestrator
+- `benchmark_baseline.sh` / `benchmark_speculative.sh` — Individual benchmark scripts
+- `sweep_spec_tokens.py` — Automated K-value sweep
+- `plot_results.py` — Chart generation (throughput, latency, distributions)
+- `workloads.json` — Workload profiles (short chat, long-form, code)
 
 ---
 
@@ -132,23 +146,29 @@ A fully disaggregated inference deployment on Kubernetes where **prefill and dec
 ### Getting Started
 
 ```bash
-# 1. Start the local Kubernetes cluster
-bash /workspace/scripts/start_kind_cluster.sh
+cd projects/advanced-infinite-scale
 
-# 2. Deploy llm-d with the distributed config
-bash /workspace/scripts/deploy_llm_d.sh
+# 1. Deploy the full stack (K8s + Prometheus + llm-d + autoscaling)
+bash deploy.sh
 
-# 3. Monitor with k9s
-k9s
+# 2. Port-forward the gateway
+kubectl port-forward -n llm-d svc/llm-d-gateway 8000:8000 &
 
-# 4. Load-test and observe scaling behavior
-guidellm --target http://<ingress-ip>/v1 --rate sweep
+# 3. Run the ramping load test
+python3 load_test.py
+
+# 4. Watch real-time scaling in the terminal dashboard
+python3 dashboard.py
 ```
 
-### Key Files
+### Project Files
 
-- `launchable-configs/tier3-deep-tech/setup.sh` — full llm-d + K8s stack setup
-- `attendee-guide.md` — Track 4 (Inference at Scale) recipe
+See [`projects/advanced-infinite-scale/`](projects/advanced-infinite-scale/) for the complete implementation:
+- `deploy.sh` — Full deployment pipeline (cluster + monitoring + llm-d + autoscaling)
+- `autoscale-policy.yaml` — HPA configs for prefill/decode pools
+- `prometheus-rules.yaml` — Custom recording rules and alerts
+- `load_test.py` — Ramping concurrency load test with pod tracking
+- `dashboard.py` — Rich terminal dashboard (pods, GPU, metrics)
 
 ---
 

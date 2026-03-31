@@ -175,6 +175,20 @@ See the full [demo walkthrough](demo/examples/walkthrough.md) for a guided scrip
 
 ---
 
+## Starter Projects
+
+Not sure what to build? We have complete, runnable starter projects for every skill level. Each includes all scripts, configs, and sample data you need.
+
+| Level | Project | Directory | What You'll Build |
+|---|---|---|---|
+| **Beginner** | Ask My Docs | [`projects/beginner-ask-my-docs/`](projects/beginner-ask-my-docs/) | RAG Q&A app with Gradio + ChromaDB |
+| **Intermediate** | Speed Demon | [`projects/intermediate-speed-demon/`](projects/intermediate-speed-demon/) | Speculative decoding benchmark suite with charts |
+| **Advanced** | Infinite Scale | [`projects/advanced-infinite-scale/`](projects/advanced-infinite-scale/) | Disaggregated inference on K8s with autoscaling |
+
+See [`hackathon-project-suggestions.md`](hackathon-project-suggestions.md) for full details, recommended configurations, and extension ideas.
+
+---
+
 ## Troubleshooting
 
 **vLLM server won't start / OOM error:**
