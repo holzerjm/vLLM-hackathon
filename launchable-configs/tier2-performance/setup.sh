@@ -30,12 +30,16 @@ pip install --break-system-packages -q \
     llmcompressor \
     auto-gptq \
     autoawq \
+    trl \
+    peft \
+    datasets \
     jupyter \
     ipywidgets \
     pandas \
     matplotlib \
     rich \
     httpx \
+    gradio \
     py-spy
 
 # --- Download 8B model (baseline for benchmarking) ---
@@ -268,6 +272,9 @@ check "8B model weights present"        "test -d /models/llama-3.1-8b-instruct"
 check "70B model weights present"       "test -d /models/llama-3.1-70b-instruct"
 check "guidellm installed"              "python3 -c 'import guidellm'"
 check "llm-compressor installed"        "python3 -c 'import llmcompressor'"
+check "TRL installed"                   "python3 -c 'import trl'"
+check "PEFT installed"                  "python3 -c 'import peft'"
+check "AutoAWQ installed"               "python3 -c 'import awq'"
 check "kubectl installed"               "kubectl version --client"
 check "Helm installed"                  "helm version"
 check "llm-d repo cloned"              "test -d /workspace/llm-d"
