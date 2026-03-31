@@ -3,6 +3,8 @@
 Projects organized by topic, each with a beginner and intermediate option.
 Every project includes complete, runnable code in the [`projects/`](projects/) directory.
 
+Each project includes complete, runnable code in the [`projects/`](projects/) directory.
+
 ---
 
 ## RAG & Application Building
