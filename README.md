@@ -23,14 +23,26 @@ launchable-configs/
     setup.sh                             #   Brev setup script (NemoClaw + vLLM + agent scaffold)
     BREV_CONFIG.md                       #   Brev console configuration steps
 docs/
-  REVIEW-AND-IMPROVEMENTS.md             # Repo review + Brev/Launchable deployment guidance
-  TRACK-ALIGNMENT-REVIEW.md              # Alignment to official event page + gap analysis
+  TRACK-ALIGNMENT-REVIEW.md              # Source-of-truth: track-by-track alignment + gap status
+  UPSTREAM-CONTRIBUTION-GUIDE.md         # Target repos, per-track PR angles, submission checklist
+  PODMAN-NOTES.md                        # Docker vs Podman compatibility matrix
+  REVIEW-AND-IMPROVEMENTS.md             # Historical: initial Track 5 rationale + Brev deployment notes
+scripts/
+  container-runtime.sh                   # Shim: detects docker vs podman, exports $COMPOSE_CMD
 projects/                                # Per-track starter projects
-  track1-redhat-fp8/                     # Track 1 Deep Tech: FP8 + MXFP4 + compound gains
+  track1-redhat-fp8/                     # Track 1 Deep Tech: Red Hat AI + FP8 + MXFP4 + compound gains
   track2-ragas-rerank/                   # Track 2 Builder: LlamaIndex + BGE rerank + RAGAs eval
-  track3-speculators-zoo/                # Track 3: EAGLE/Medusa/N-gram/draft comparison + CI
-  track6-perf-lab/                       # Track 6: GuideLLM + Prometheus/Grafana + profiling
-  # (plus the 7 earlier project starters: ask-my-docs, shrink-to-fit, reward-ranker, ...)
+  track3-speculators-zoo/                # Track 3: EAGLE/Medusa/N-gram/draft comparison + regression CI
+  track4-inference-gateway/              # Track 4 Builder: multi-model + A/B canary + per-pool HPA
+  track6-perf-lab/                       # Track 6: GuideLLM scenarios + Prometheus/Grafana + profiling
+  # --- Level-tiered starters (match any track) ---
+  beginner-ask-my-docs/                  # RAG + Gradio (Track 2)
+  beginner-shrink-to-fit/                # Pre-quantized vs FP16 side-by-side (Track 1)
+  beginner-reward-ranker/                # RLHF preference collection + reward model
+  intermediate-speed-demon/              # 70B + speculative decoding sweep (Track 3)
+  intermediate-compress-and-compare/     # GPTQ vs AWQ quality/speed Pareto (Track 1)
+  intermediate-align-it/                 # DPO with LoRA adapters
+  advanced-infinite-scale/               # llm-d disaggregated + HPA + Prometheus (Track 4)
 demo/                                    # Hands-on demos
   # --- ZeroClaw code assistant (laptop + GPU) ---
   config.ollama.toml                     #   ZeroClaw config for laptop (Ollama backend)
@@ -124,7 +136,10 @@ Open `hackathon-gpu-cost-estimate.xlsx` to review and adjust GPU instance costs 
 
 ### 6. Review & plan
 
-See [`docs/REVIEW-AND-IMPROVEMENTS.md`](docs/REVIEW-AND-IMPROVEMENTS.md) for a detailed review of the track coverage, Brev/Launchable deployment best practices, and the rationale behind the Track 5 NemoClaw addition.
+- [`docs/TRACK-ALIGNMENT-REVIEW.md`](docs/TRACK-ALIGNMENT-REVIEW.md) — source of truth for how each track-kit maps to the official event page, with the current gap-closure status.
+- [`docs/UPSTREAM-CONTRIBUTION-GUIDE.md`](docs/UPSTREAM-CONTRIBUTION-GUIDE.md) — per-track paths to a merged PR (relevant for the Best Upstream Contribution prize).
+- [`docs/PODMAN-NOTES.md`](docs/PODMAN-NOTES.md) — Podman vs. Docker compatibility matrix.
+- [`docs/REVIEW-AND-IMPROVEMENTS.md`](docs/REVIEW-AND-IMPROVEMENTS.md) — historical Track 5 rationale and Brev/Launchable deployment notes.
 
 ## Hackathon tracks
 
@@ -133,7 +148,7 @@ Each track has three skill lanes (Starter / Builder / Deep Tech). Starter kits l
 1. **Lean Inference Challenge** — Quantize models and optimize throughput · [Track 1 Deep Tech kit](projects/track1-redhat-fp8/README.md) · [beginner quant starter](projects/beginner-shrink-to-fit/README.md) · [intermediate GPTQ/AWQ](projects/intermediate-compress-and-compare/README.md)
 2. **RAG on Open Inference** — Build retrieval-augmented generation apps on vLLM · [Track 2 Builder kit (LlamaIndex + RAGAs + reranker)](projects/track2-ragas-rerank/README.md) · [beginner RAG starter](projects/beginner-ask-my-docs/README.md)
 3. **Speculative Futures** — Speed up inference with speculative decoding · [Track 3 Speculators Zoo (EAGLE/Medusa/N-gram)](projects/track3-speculators-zoo/README.md) · [intermediate speed demon](projects/intermediate-speed-demon/README.md)
-4. **Inference at Scale** — Deploy llm-d on Kubernetes with disaggregated serving · [advanced infinite scale](projects/advanced-infinite-scale/README.md)
+4. **Inference at Scale** — Deploy llm-d on Kubernetes with disaggregated serving · [Track 4 Builder kit (multi-model + A/B canary)](projects/track4-inference-gateway/README.md) · [advanced infinite scale (Deep Tech)](projects/advanced-infinite-scale/README.md)
 5. **Agentic Edge powered by NemoClaw** 🏆 (NVIDIA GPU Prize) — High-accuracy, steerable agents on vLLM · [Track 5 guide](demo/nemoclaw-agent/README.md)
 6. **Performance Tuning & Evaluation** — Benchmark and evaluate with GuideLLM / Prometheus / lm-eval · [Track 6 perf lab](projects/track6-perf-lab/README.md)
 

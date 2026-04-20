@@ -1,8 +1,12 @@
 # Repository Review & Improvement Proposal
 
-This document reviews the current state of the hackathon repo, compares it with the public [TOA vLLM / LLM-D Hackathon page](https://the-open-accelerator.com/hackathon/upcoming/vLLM_LLM-D/), proposes improvements using **NVIDIA Brev** and **Launchables**, and introduces a new **Track 5 — NVIDIA GPU Prize: Agentic Edge powered by NemoClaw**.
+> 📎 **Historical document.** This was the first review pass, done before the full official hackathon page HTML was available. For the current, source-of-truth gap analysis — which incorporates the canonical track descriptions and records what's been addressed since — see [TRACK-ALIGNMENT-REVIEW.md](TRACK-ALIGNMENT-REVIEW.md).
+>
+> Keeping this file for context: it explains the rationale behind the Track 5 NemoClaw addition and the initial Brev/Launchable deployment recommendations.
 
-> ⚠️ The public hackathon page returned a 403 during automated inspection. Comparison below is based on the tracks already documented in the attendee guide (which match the announced scope) plus the user-provided Track 5 description. Verify final track numbering against the canonical event page before the hackathon.
+This document reviews the state of the hackathon repo at the point of Track 5's introduction, compares it with the public [TOA vLLM / LLM-D Hackathon page](https://the-open-accelerator.com/hackathon/upcoming/vLLM_LLM-D/), proposes improvements using **NVIDIA Brev** and **Launchables**, and introduces **Track 5 — NVIDIA GPU Prize: Agentic Edge powered by NemoClaw**.
+
+> ⚠️ The public hackathon page returned a 403 during automated inspection at the time of this writing. Comparison below was based on the tracks already documented in the attendee guide plus the user-provided Track 5 description. The subsequent [TRACK-ALIGNMENT-REVIEW.md](TRACK-ALIGNMENT-REVIEW.md) pass validated everything against the actual HTML.
 
 ---
 

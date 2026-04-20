@@ -13,9 +13,18 @@ echo "  Track 5 — NemoClaw Agentic Edge Demo"
 echo "============================================="
 
 # --- System basics ---
+# NemoClaw specifically requires Docker — its OpenShell sandbox talks to the
+# Docker socket directly. Podman is not supported for this track.
+# See docs/PODMAN-NOTES.md for the full compatibility matrix.
 if ! command -v docker &> /dev/null; then
-    echo "Docker is required. Install it first:"
-    echo "  https://docs.docker.com/engine/install/ubuntu/"
+    echo "✗ Docker is required for NemoClaw (OpenShell sandbox dependency)."
+    echo ""
+    if command -v podman &> /dev/null; then
+        echo "  Podman is installed but NemoClaw does not support it. See:"
+        echo "  docs/PODMAN-NOTES.md  (NemoClaw section)"
+    fi
+    echo "  Install Docker:"
+    echo "    https://docs.docker.com/engine/install/ubuntu/"
     exit 1
 fi
 

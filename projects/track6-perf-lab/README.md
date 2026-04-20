@@ -52,8 +52,10 @@ GuideLLM writes TTFT, TPS, throughput, and queue-wait percentiles. Build a chart
 ## Builder lane: Prometheus + Grafana
 
 ```bash
-# 1. Start the monitoring stack
-docker-compose up -d                    # or: podman-compose up -d
+# 1. Start the monitoring stack (works with docker or podman)
+source ../../scripts/container-runtime.sh  # sets $COMPOSE_CMD for you
+$COMPOSE_CMD up -d
+# Equivalently:  docker compose up -d    OR    podman-compose up -d
 
 # 2. Point your vLLM at :9091 (Prometheus scrapes /metrics automatically)
 # vLLM exposes /metrics by default — nothing extra to configure

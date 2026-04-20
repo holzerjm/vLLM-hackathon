@@ -24,9 +24,9 @@ python3 /workspace/test_client.py
 
 Your vLLM server exposes an **OpenAI-compatible API** at `http://localhost:8000/v1` — use it with any OpenAI client library, LangChain, or plain HTTP requests.
 
-> 📝 **Pre-event prep note:** the event page lists **Podman** in the prerequisite tools. Brev instances ship with **Docker** — functionally equivalent for our purposes. If you're running a demo on your laptop (ZeroClaw or NemoClaw), Docker is required specifically for NemoClaw's OpenShell sandbox. Podman works everywhere else.
+> 📝 **Pre-event prep note:** the event page lists **Podman** in the prerequisite tools. Brev instances ship with **Docker** — functionally equivalent for our purposes. Podman works everywhere in this repo **except Track 5** (NemoClaw specifically requires Docker). Full compatibility matrix in [`docs/PODMAN-NOTES.md`](docs/PODMAN-NOTES.md). Sourceable shim: `scripts/container-runtime.sh`.
 
-> 🏆 **Prize reminder:** the event has a dedicated **Best Upstream Contribution** prize and gives 3/20 judging points for open-source contribution. Every starter kit in [`projects/`](projects/) calls out specific upstream PR opportunities — look for the "Submission angles" section at the bottom of each project README.
+> 🏆 **Prize reminder:** the event has a dedicated **Best Upstream Contribution** prize worth real points. See [`docs/UPSTREAM-CONTRIBUTION-GUIDE.md`](docs/UPSTREAM-CONTRIBUTION-GUIDE.md) for a repo-by-repo target list, per-track PR angles, and a submission checklist. Every starter kit in [`projects/`](projects/) also flags specific upstream PR opportunities in its "Submission angles" section.
 
 ---
 
@@ -143,15 +143,21 @@ Full kit: [projects/track3-speculators-zoo/README.md](projects/track3-speculator
 
 ### Track 4: Inference at Scale
 ```bash
-# Spin up a local K8s cluster
+# --- Starter: deploy vLLM behind the llm-d Inference Gateway ---
 bash /workspace/scripts/start_kind_cluster.sh
-
-# Deploy llm-d with the 8B model
 bash /workspace/scripts/deploy_llm_d.sh /workspace/llm-d-configs/values-8b.yaml
 
-# Scale to 70B with disaggregated serving
+# --- Builder: multi-model + A/B canary + per-pool HPA ---
+cd projects/track4-inference-gateway
+bash scripts/deploy_gateway.sh helm-values/values-multi-model.yaml
+python3 scripts/send_mixed_traffic.py --multi-model       # observe routing
+bash scripts/deploy_gateway.sh helm-values/values-ab-split.yaml
+bash scripts/shift_traffic.sh 50 50                        # canary ramp without redeploy
+
+# --- Deep Tech: disaggregated 70B + autoscaling (existing) ---
 bash /workspace/scripts/deploy_llm_d.sh /workspace/llm-d-configs/values-70b-distributed.yaml
 ```
+Full kits: [projects/track4-inference-gateway/README.md](projects/track4-inference-gateway/README.md) · [projects/advanced-infinite-scale/README.md](projects/advanced-infinite-scale/README.md)
 
 ### Track 5: Agentic Edge powered by NemoClaw 🏆 (NVIDIA GPU Prize)
 Build high-accuracy, steerable agents on top of vLLM using NemoClaw's sandboxed runtime. Three tiers:
@@ -249,6 +255,18 @@ See the full [demo walkthrough](demo/examples/walkthrough.md) for a guided scrip
 
 Not sure what to build? We have complete, runnable starter projects organized by topic. Each includes all scripts, configs, and sample data you need.
 
+### Track-specific kits (built for each official challenge)
+
+| Track | Kit | Directory | What You'll Build |
+|---|---|---|---|
+| **1** Deep Tech | Red Hat AI + FP8 | [`projects/track1-redhat-fp8/`](projects/track1-redhat-fp8/) | Red Hat pre-quantized models + FP8/MXFP4 + compound-gains harness |
+| **2** Builder | RAGAs + Reranker | [`projects/track2-ragas-rerank/`](projects/track2-ragas-rerank/) | LlamaIndex + BGE cross-encoder reranker + RAGAs evaluation |
+| **3** Builder / Deep Tech | Speculators Zoo | [`projects/track3-speculators-zoo/`](projects/track3-speculators-zoo/) | EAGLE / Medusa / N-gram / draft-model comparison + regression CI |
+| **4** Builder | Inference Gateway | [`projects/track4-inference-gateway/`](projects/track4-inference-gateway/) | Multi-model + A/B canary + per-pool autoscaling |
+| **4** Deep Tech | Infinite Scale | [`projects/advanced-infinite-scale/`](projects/advanced-infinite-scale/) | Disaggregated 70B on K8s with HPA + Prometheus |
+| **5** 🏆 | NemoClaw agent | [`demo/nemoclaw-agent/`](demo/nemoclaw-agent/) | Starter scaffold, multi-turn reference agent, 4-profile benchmark |
+| **6** all lanes | Perf Lab | [`projects/track6-perf-lab/`](projects/track6-perf-lab/) | GuideLLM scenarios + Prometheus/Grafana + profiling + regression gate |
+
 ### RAG & Application Building
 
 | Level | Project | Directory | What You'll Build |
@@ -314,3 +332,8 @@ Run `nvidia-smi`. If it fails, your instance may still be provisioning — wait 
 - [NemoClaw local inference guide](https://docs.nvidia.com/nemoclaw/latest/inference/use-local-inference.html)
 - [Brev console reference](https://docs.nvidia.com/brev/latest/guides/console-reference)
 - [One-click Launchables blog](https://developer.nvidia.com/blog/one-click-deployments-for-the-best-of-nvidia-ai-with-nvidia-launchables/)
+
+### In-repo references
+- [`docs/TRACK-ALIGNMENT-REVIEW.md`](docs/TRACK-ALIGNMENT-REVIEW.md) — what each track-kit covers and the current gap-closure status
+- [`docs/UPSTREAM-CONTRIBUTION-GUIDE.md`](docs/UPSTREAM-CONTRIBUTION-GUIDE.md) — per-track PR angles (for the Best Upstream Contribution prize)
+- [`docs/PODMAN-NOTES.md`](docs/PODMAN-NOTES.md) — Docker vs. Podman compatibility matrix

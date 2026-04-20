@@ -83,11 +83,11 @@ Official tools: **llm-d · Kubernetes · Inference Gateway · Helm**
 | Deep Tech | Prefill/decode disaggregation + **extend llm-d benchmark harness** | ✅ disaggregation covered in `launchable-configs/tier3-deep-tech/` |
 
 **Gaps:**
-1. "Inference Gateway" is the terminology the event uses — repo should match
-2. No multi-model / A/B split example
-3. No contribution back to llm-d's benchmark harness demonstrated
+1. ~~"Inference Gateway" is the terminology the event uses — repo should match~~ ✅ addressed
+2. ~~No multi-model / A/B split example~~ ✅ addressed
+3. No contribution back to llm-d's benchmark harness demonstrated (recommended as a submission angle — not pre-built)
 
-**Fix (small):** rename/annotate `advanced-infinite-scale/` Helm values and README to use "Inference Gateway"; add a sample `values-multi-model.yaml` and a note about upstream PR opportunities. Not done in this pass — flagged below.
+**Fix:** added `projects/track4-inference-gateway/` — multi-model Helm values, A/B canary-split values, runtime weight-shift script, independent HPA policies per pool, and traffic observation helpers. Uses "Inference Gateway" terminology throughout.
 
 ### Track 5 — Agentic Edge powered by NemoClaw 🏆
 
@@ -119,17 +119,17 @@ Official tools: **GuideLLM · vLLM Benchmarks · Prometheus · lm-eval-harness �
 
 ## Cross-cutting repo issues
 
-### Issue 1: Docker vs. Podman
+### Issue 1: Docker vs. Podman ✅ addressed
 
 The event prep page says **Podman**, not Docker. Several of our setup scripts (`launchable-configs/tier4-nemoclaw/setup.sh`, `demo/nemoclaw-agent/setup.sh`) require Docker. NemoClaw's OpenShell runtime itself needs Docker — so this is a real incompatibility to flag.
 
-**Fix (docs only):** updated the attendee guide with a "Podman vs. Docker" note — Brev instances have Docker; local laptop users on Track 4 need Docker for NemoClaw specifically.
+**Fix:** added [`docs/PODMAN-NOTES.md`](PODMAN-NOTES.md) (full compatibility matrix: Podman works everywhere except Track 5 NemoClaw) + `scripts/container-runtime.sh` (runtime-detection shim) + improved NemoClaw setup error message that detects Podman-only machines and points at the compat matrix.
 
-### Issue 2: Upstream Contribution prize is not highlighted
+### Issue 2: Upstream Contribution prize is not highlighted ✅ addressed
 
 The event has a dedicated **Best Upstream Contribution** prize, and Open-Source Contribution is 3/20 points. The repo doesn't point attendees at specific good-first-issue candidates in vLLM, llm-d, LLM Compressor, or Speculators.
 
-**Fix:** added `docs/UPSTREAM-CONTRIBUTION-GUIDE.md` listing current good-first-issue labels across the five key repos + how to turn a Track project into a PR.
+**Fix:** added [`docs/UPSTREAM-CONTRIBUTION-GUIDE.md`](UPSTREAM-CONTRIBUTION-GUIDE.md) with a target-repo table, per-track PR angles, submission checklist, and instructions for using mentors to nominate near-complete PRs.
 
 ### Issue 3: "Inference Efficiency Impact" scoring
 
@@ -145,19 +145,24 @@ Looking at the repo, some ideas that would make strong Track/Prize submissions b
 
 ---
 
-## New starter projects added in this pass
+## New starter projects added
 
 1. `projects/track1-redhat-fp8/` — FP8 + compound gains (Red Hat quantization showcase)
 2. `projects/track2-ragas-rerank/` — LlamaIndex + BGE reranker + RAGAs evaluation
 3. `projects/track3-speculators-zoo/` — EAGLE / Medusa / N-gram / draft-model comparison
-4. `projects/track6-perf-lab/` — GuideLLM scenarios + Prometheus + profiling
+4. `projects/track4-inference-gateway/` — multi-model + A/B canary + independent HPA
+5. `projects/track6-perf-lab/` — GuideLLM scenarios + Prometheus + profiling
 
-## Deferred (recommendation only, not implemented)
+## Cross-cutting additions
 
-- Track 4 multi-model / A/B split Helm values
-- Cost model notebook (`projects/track1-cost-model/` or similar)
-- A `docs/UPSTREAM-CONTRIBUTION-GUIDE.md` with live issue links (recommend building this close to the event so links are fresh)
-- Renaming `advanced-infinite-scale/` to use "Inference Gateway" terminology per event page
+- [`docs/PODMAN-NOTES.md`](PODMAN-NOTES.md) + `scripts/container-runtime.sh` (runtime shim)
+- [`docs/UPSTREAM-CONTRIBUTION-GUIDE.md`](UPSTREAM-CONTRIBUTION-GUIDE.md) with per-track PR angles
+
+## Still deferred (recommendation only)
+
+- Cost model notebook ($/1M tokens across quantization × speculation × batch size) — flagged as a strong Innovation-points submission but not pre-built
+- Renaming `projects/advanced-infinite-scale/` to use "Inference Gateway" terminology — new Track 4 kit already does this; existing advanced project stays as Deep-Tech-focused complement
+- Pre-cached list of specific good-first-issue URLs — deliberately omitted; the upstream guide recommends freshening these the week of the event
 
 ## Suggested attendee-guide updates
 
