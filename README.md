@@ -24,6 +24,13 @@ launchable-configs/
     BREV_CONFIG.md                       #   Brev console configuration steps
 docs/
   REVIEW-AND-IMPROVEMENTS.md             # Repo review + Brev/Launchable deployment guidance
+  TRACK-ALIGNMENT-REVIEW.md              # Alignment to official event page + gap analysis
+projects/                                # Per-track starter projects
+  track1-redhat-fp8/                     # Track 1 Deep Tech: FP8 + MXFP4 + compound gains
+  track2-ragas-rerank/                   # Track 2 Builder: LlamaIndex + BGE rerank + RAGAs eval
+  track3-speculators-zoo/                # Track 3: EAGLE/Medusa/N-gram/draft comparison + CI
+  track6-perf-lab/                       # Track 6: GuideLLM + Prometheus/Grafana + profiling
+  # (plus the 7 earlier project starters: ask-my-docs, shrink-to-fit, reward-ranker, ...)
 demo/                                    # Hands-on demos
   # --- ZeroClaw code assistant (laptop + GPU) ---
   config.ollama.toml                     #   ZeroClaw config for laptop (Ollama backend)
@@ -121,13 +128,16 @@ See [`docs/REVIEW-AND-IMPROVEMENTS.md`](docs/REVIEW-AND-IMPROVEMENTS.md) for a d
 
 ## Hackathon tracks
 
-1. **Lean Inference Challenge** — Quantize models and optimize throughput
-2. **RAG on Open Inference** — Build retrieval-augmented generation apps on vLLM
-3. **Speculative Futures** — Speed up 70B inference with speculative decoding
-4. **Inference at Scale** — Deploy llm-d on Kubernetes with disaggregated serving
-5. **Agentic Edge powered by NemoClaw** 🏆 (NVIDIA GPU Prize) — High-accuracy, steerable agents on vLLM ([guide](demo/nemoclaw-agent/README.md))
-5a. **BYOP (Build Your Own Product)** — Ship a product powered by local LLM inference
-6. **Performance Tuning & Evaluation** — Benchmark and evaluate with guidellm and lm-eval
+Each track has three skill lanes (Starter / Builder / Deep Tech). Starter kits linked below:
+
+1. **Lean Inference Challenge** — Quantize models and optimize throughput · [Track 1 Deep Tech kit](projects/track1-redhat-fp8/README.md) · [beginner quant starter](projects/beginner-shrink-to-fit/README.md) · [intermediate GPTQ/AWQ](projects/intermediate-compress-and-compare/README.md)
+2. **RAG on Open Inference** — Build retrieval-augmented generation apps on vLLM · [Track 2 Builder kit (LlamaIndex + RAGAs + reranker)](projects/track2-ragas-rerank/README.md) · [beginner RAG starter](projects/beginner-ask-my-docs/README.md)
+3. **Speculative Futures** — Speed up inference with speculative decoding · [Track 3 Speculators Zoo (EAGLE/Medusa/N-gram)](projects/track3-speculators-zoo/README.md) · [intermediate speed demon](projects/intermediate-speed-demon/README.md)
+4. **Inference at Scale** — Deploy llm-d on Kubernetes with disaggregated serving · [advanced infinite scale](projects/advanced-infinite-scale/README.md)
+5. **Agentic Edge powered by NemoClaw** 🏆 (NVIDIA GPU Prize) — High-accuracy, steerable agents on vLLM · [Track 5 guide](demo/nemoclaw-agent/README.md)
+6. **Performance Tuning & Evaluation** — Benchmark and evaluate with GuideLLM / Prometheus / lm-eval · [Track 6 perf lab](projects/track6-perf-lab/README.md)
+
+> 💡 **Best Upstream Contribution prize** is awarded to the work most likely to land as a merged PR in vLLM, llm-d, or related projects. Every track kit above flags specific submission angles that target upstream contribution directly.
 
 ## Links
 

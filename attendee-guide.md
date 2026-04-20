@@ -24,6 +24,10 @@ python3 /workspace/test_client.py
 
 Your vLLM server exposes an **OpenAI-compatible API** at `http://localhost:8000/v1` — use it with any OpenAI client library, LangChain, or plain HTTP requests.
 
+> 📝 **Pre-event prep note:** the event page lists **Podman** in the prerequisite tools. Brev instances ship with **Docker** — functionally equivalent for our purposes. If you're running a demo on your laptop (ZeroClaw or NemoClaw), Docker is required specifically for NemoClaw's OpenShell sandbox. Podman works everywhere else.
+
+> 🏆 **Prize reminder:** the event has a dedicated **Best Upstream Contribution** prize and gives 3/20 judging points for open-source contribution. Every starter kit in [`projects/`](projects/) calls out specific upstream PR opportunities — look for the "Submission angles" section at the bottom of each project README.
+
 ---
 
 ## Choose Your Environment
@@ -84,34 +88,58 @@ Your vLLM server exposes an **OpenAI-compatible API** at `http://localhost:8000/
 
 ### Track 1: Lean Inference Challenge (Quantization)
 ```bash
-# Quantize the 8B model to 4-bit GPTQ
-python3 /workspace/benchmarks/quantize_model.py
+# --- Starter: pre-quantized Red Hat AI model (fastest path) ---
+cd projects/track1-redhat-fp8
+python3 pull_redhat_models.py --model 8b-fp8
+bash serve_configs/fp8_redhat.sh
 
-# Benchmark original vs quantized
-bash /workspace/benchmarks/bench_throughput.sh /models/llama-3.1-8b-instruct
-bash /workspace/benchmarks/bench_throughput.sh /models/llama-3.1-8b-instruct-gptq-4bit
+# --- Builder: quantize it yourself ---
+python3 /workspace/benchmarks/quantize_model.py              # GPTQ
+python3 projects/track1-redhat-fp8/quantize_fp8_yourself.py  # FP8 via LLM Compressor
+
+# --- Deep Tech: compound gains (FP8 + MXFP4 + spec decoding) ---
+python3 projects/track1-redhat-fp8/benchmark_compound.py --compound-matrix
 ```
+Full kit: [projects/track1-redhat-fp8/README.md](projects/track1-redhat-fp8/README.md)
 
 ### Track 2: RAG on Open Inference
 ```python
-# Your vLLM server is the LLM backend — connect LangChain to it
+# --- Starter: LangChain + vLLM (beginner kit) ---
+# See: projects/beginner-ask-my-docs/
 from langchain_community.llms import VLLMOpenAI
-
 llm = VLLMOpenAI(
     openai_api_base="http://localhost:8000/v1",
     model_name="/models/llama-3.1-8b-instruct",
     openai_api_key="not-needed"
 )
 ```
+```bash
+# --- Builder: LlamaIndex + BGE reranker + RAGAs evaluation ---
+cd projects/track2-ragas-rerank
+pip install llama-index llama-index-vector-stores-chroma \
+    llama-index-embeddings-huggingface \
+    llama-index-postprocessor-flag-embedding-reranker ragas
+python3 ingest.py --docs sample-docs/
+python3 query_with_reranker.py "How does vLLM handle KV-cache?"
+python3 eval_with_ragas.py   # produces faithfulness / relevancy / precision scores
+```
+Full kit: [projects/track2-ragas-rerank/README.md](projects/track2-ragas-rerank/README.md)
 
 ### Track 3: Speculative Futures
 ```bash
-# Start 70B with 8B as draft model
+# --- Starter: classic draft-model speculation ---
 bash /workspace/benchmarks/speculative_decoding.sh
 
-# Compare latency: 70B normal vs 70B with speculation
-bash /workspace/benchmarks/bench_throughput.sh /models/llama-3.1-70b-instruct 50 2
+# --- Builder: compare EAGLE / Medusa / N-gram / draft-model side-by-side ---
+cd projects/track3-speculators-zoo
+bash install.sh                             # Speculators v0.3.0 + EAGLE/Medusa weights
+python3 measure_acceptance.py --all         # full comparison → results/acceptance_rates.csv
+
+# --- Deep Tech: adaptive k and regression CI ---
+python3 auto_tune_spec_length.py            # bandit over k ∈ {2,3,5,7}
+python3 regression/spec_regression_test.py --save regression/baseline.json
 ```
+Full kit: [projects/track3-speculators-zoo/README.md](projects/track3-speculators-zoo/README.md)
 
 ### Track 4: Inference at Scale
 ```bash
@@ -164,15 +192,24 @@ cd /workspace/app-scaffold && bash run.sh
 
 ### Track 6: Performance Tuning & Evaluation
 ```bash
-# Run lm-eval benchmarks
-lm_eval --model vllm \
-    --model_args pretrained=/models/llama-3.1-8b-instruct \
-    --tasks hellaswag,arc_easy \
-    --batch_size auto
+# --- Starter: run the 3-scenario GuideLLM sweep ---
+cd projects/track6-perf-lab
+bash scenarios/run_all.sh                   # chat + code + summarize workloads → results/*.json
 
-# Load test with guidellm
+# --- Builder: wire Prometheus + Grafana live dashboards ---
+docker compose up -d                        # or: podman-compose up -d
+# Open Grafana at http://localhost:3000 (admin/admin), import grafana/vllm-dashboard.json
+
+# --- Deep Tech: profile + regression CI ---
+python3 profile_vllm.py --duration 120 --output profile.svg
+python3 regression/check_regression.py --save regression/baseline.json
+
+# --- Alternative starters (existing tools still work) ---
+lm_eval --model vllm --model_args pretrained=/models/llama-3.1-8b-instruct \
+    --tasks hellaswag,arc_easy --batch_size auto
 guidellm --target http://localhost:8000/v1 --model /models/llama-3.1-8b-instruct
 ```
+Full kit: [projects/track6-perf-lab/README.md](projects/track6-perf-lab/README.md)
 
 ---
 
