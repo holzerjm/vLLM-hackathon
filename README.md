@@ -19,7 +19,13 @@ launchable-configs/
   tier3-deep-tech/                       # 4x A100 80GB — distributed inference, llm-d, K8s
     setup.sh                             #   Brev setup script (full llm-d stack, kind, k9s)
     BREV_CONFIG.md                       #   Brev console configuration steps
-demo/                                    # ZeroClaw code assistant demo
+  tier4-nemoclaw/                        # 1x A100/H100 — Agentic Edge (NVIDIA GPU Prize)
+    setup.sh                             #   Brev setup script (NemoClaw + vLLM + agent scaffold)
+    BREV_CONFIG.md                       #   Brev console configuration steps
+docs/
+  REVIEW-AND-IMPROVEMENTS.md             # Repo review + Brev/Launchable deployment guidance
+demo/                                    # Hands-on demos
+  # --- ZeroClaw code assistant (laptop + GPU) ---
   config.ollama.toml                     #   ZeroClaw config for laptop (Ollama backend)
   config.vllm.toml                       #   ZeroClaw config for GPU instance (vLLM backend)
   install.sh                             #   One-command setup for laptop
@@ -32,6 +38,16 @@ demo/                                    # ZeroClaw code assistant demo
   examples/
     sample_code.py                       #   Sample Python file with intentional issues
     walkthrough.md                       #   Step-by-step demo script
+  # --- NemoClaw agentic edge (Track 5) ---
+  nemoclaw-agent/
+    README.md                            #   Track 5 guide (Starter / Builder / Deep Tech)
+    setup.sh                             #   NemoClaw install + vLLM onboarding
+    blueprint.yaml                       #   Inference profiles, tools, network policy
+    starter-template.py                  #   Starter tier: minimal scaffold to vibe-code on
+    customer_support_agent.py            #   Builder tier: multi-turn reference agent
+    tools/                               #   KB search, orders, tickets, escalation
+    benchmarks/
+      latency-test.py                    #   Deep Tech: profile-comparison harness
 ```
 
 ## Tiers at a glance
@@ -41,6 +57,7 @@ demo/                                    # ZeroClaw code assistant demo
 | **1 — App Builder** | 1x L40S (48 GB) | Llama 3.1 8B | RAG, BYOP, Eval |
 | **2 — Performance** | 2x A100 80 GB | 8B + 70B | Quantization, Speculative Decode, Eval |
 | **3 — Deep Tech** | 4x A100 80 GB | 8B + 70B | Distributed Inference, llm-d, K8s |
+| **4 — Agentic Edge** 🏆 | 1x A100/H100 80 GB | Llama 3.1 8B + Nemotron profiles | **Track 5 — NVIDIA GPU Prize** |
 
 ## How to use
 
@@ -64,7 +81,17 @@ Distribute the Launchable links to attendees along with the [Attendee Guide](att
 - Quick-start recipes for each of the 6 hackathon tracks
 - Troubleshooting common issues
 
-### 3. Run the ZeroClaw code assistant demo
+### 3. Build a NemoClaw agent (Track 5 — NVIDIA GPU Prize)
+
+The [`demo/nemoclaw-agent/`](demo/nemoclaw-agent/) directory contains the full Track 5 scaffold — Starter template, Builder reference agent, four inference profiles, and a latency benchmark harness. Deploy the Tier-4 Launchable and walk through the three tiers in `demo/nemoclaw-agent/README.md`.
+
+```bash
+bash /workspace/start_vllm_server.sh      # start vLLM with tool-calling enabled
+bash /workspace/onboard_nemoclaw.sh       # wire NemoClaw to the local vLLM
+nemoclaw agentic-edge connect             # enter the sandboxed agent environment
+```
+
+### 4. Run the ZeroClaw code assistant demo
 
 The [`demo/`](demo/) directory contains a ready-to-run code assistant that shows how quantized local LLMs handle everyday coding tasks (explain, refactor, review) while automatically routing complex reasoning (architecture review, security audit) to a cloud model like Claude.
 
@@ -84,9 +111,13 @@ zeroclaw start
 
 See the full [demo walkthrough](demo/examples/walkthrough.md) for a guided script attendees can follow.
 
-### 4. Estimate costs
+### 5. Estimate costs
 
 Open `hackathon-gpu-cost-estimate.xlsx` to review and adjust GPU instance costs based on expected team count and session duration.
+
+### 6. Review & plan
+
+See [`docs/REVIEW-AND-IMPROVEMENTS.md`](docs/REVIEW-AND-IMPROVEMENTS.md) for a detailed review of the track coverage, Brev/Launchable deployment best practices, and the rationale behind the Track 5 NemoClaw addition.
 
 ## Hackathon tracks
 
@@ -94,7 +125,8 @@ Open `hackathon-gpu-cost-estimate.xlsx` to review and adjust GPU instance costs 
 2. **RAG on Open Inference** — Build retrieval-augmented generation apps on vLLM
 3. **Speculative Futures** — Speed up 70B inference with speculative decoding
 4. **Inference at Scale** — Deploy llm-d on Kubernetes with disaggregated serving
-5. **BYOP (Build Your Own Product)** — Ship a product powered by local LLM inference
+5. **Agentic Edge powered by NemoClaw** 🏆 (NVIDIA GPU Prize) — High-accuracy, steerable agents on vLLM ([guide](demo/nemoclaw-agent/README.md))
+5a. **BYOP (Build Your Own Product)** — Ship a product powered by local LLM inference
 6. **Performance Tuning & Evaluation** — Benchmark and evaluate with guidellm and lm-eval
 
 ## Links
@@ -103,5 +135,8 @@ Open `hackathon-gpu-cost-estimate.xlsx` to review and adjust GPU instance costs 
 - [llm-d Documentation](https://llm-d.ai/docs/)
 - [ZeroClaw](https://github.com/zeroclaw-labs/zeroclaw)
 - [Ollama](https://ollama.com/)
+- [NemoClaw (NVIDIA)](https://github.com/NVIDIA/NemoClaw) / [brevdev fork](https://github.com/brevdev/NemoClaw)
+- [NemoClaw local inference guide](https://docs.nvidia.com/nemoclaw/latest/inference/use-local-inference.html)
 - [NVIDIA Brev Console](https://brev.nvidia.com/)
 - [Brev Launchables Docs](https://docs.nvidia.com/brev/concepts/launchables)
+- [One-click Launchables blog](https://developer.nvidia.com/blog/one-click-deployments-for-the-best-of-nvidia-ai-with-nvidia-launchables/)

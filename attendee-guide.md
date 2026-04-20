@@ -28,15 +28,15 @@ Your vLLM server exposes an **OpenAI-compatible API** at `http://localhost:8000/
 
 ## Choose Your Environment
 
-| | **Tier 1: App Builder** | **Tier 2: Performance** | **Tier 3: Deep Tech** |
-|---|---|---|---|
-| **GPU** | 1× L40S (48GB) | 2× A100 80GB | 4× A100 80GB |
-| **Models** | Llama 3.1 8B | 8B + 70B | 8B + 70B |
-| **Best for** | RAG, apps, products | Quantization, speculative decoding, benchmarking | Distributed inference, llm-d, K8s |
-| **Tracks** | 2 (RAG), 5 (BYOP), 6 (Eval) | 1 (Lean Inference), 3 (Spec Decode), 6 (Eval) | 4 (Inference at Scale), 1 & 3 (Deep Tech lane) |
-| **Skill lane** | Starter / Builder | Builder / Deep Tech | Deep Tech |
+| | **Tier 1: App Builder** | **Tier 2: Performance** | **Tier 3: Deep Tech** | **Tier 4: Agentic Edge** 🏆 |
+|---|---|---|---|---|
+| **GPU** | 1× L40S (48GB) | 2× A100 80GB | 4× A100 80GB | 1× A100/H100 80GB |
+| **Models** | Llama 3.1 8B | 8B + 70B | 8B + 70B | Llama 3.1 8B (+ Nemotron profiles) |
+| **Best for** | RAG, apps, products | Quantization, speculative decoding, benchmarking | Distributed inference, llm-d, K8s | Autonomous agents, tool-calling, steering |
+| **Tracks** | 2 (RAG), 5a (BYOP), 6 (Eval) | 1 (Lean Inference), 3 (Spec Decode), 6 (Eval) | 4 (Inference at Scale), 1 & 3 (Deep Tech lane) | **5 (Agentic Edge — NVIDIA GPU Prize)** |
+| **Skill lane** | Starter / Builder | Builder / Deep Tech | Deep Tech | Starter / Builder / Deep Tech |
 
-**Not sure which to pick?** If you want to build an app or demo, go Tier 1. If you want to make models faster, go Tier 2. If you want to run a distributed inference cluster, go Tier 3.
+**Not sure which to pick?** If you want to build an app or demo, go Tier 1. If you want to make models faster, go Tier 2. If you want to run a distributed inference cluster, go Tier 3. **If you want to build autonomous agents for the NVIDIA GPU Prize, go Tier 4.**
 
 ---
 
@@ -69,6 +69,14 @@ Your vLLM server exposes an **OpenAI-compatible API** at `http://localhost:8000/
 - Pre-built llm-d deployment configs at `/workspace/llm-d-configs/`
 - Disaggregated prefill/decode configuration for 70B
 - Inference monitoring dashboard
+
+### Tier 4 Additionally (Agentic Edge / NVIDIA GPU Prize)
+- NemoClaw + OpenShell sandbox runtime
+- vLLM launched with `--enable-auto-tool-choice` for structured tool calls
+- Four inference profiles wired in `blueprint.yaml` (vLLM, vLLM+steered, NIM-local, NVIDIA-cloud)
+- Agent scaffolds at `/workspace/nemoclaw-agent/` (Starter, Builder, Deep Tech)
+- Latency benchmark harness for profile comparison
+- Docker + Node 20 (required by NemoClaw)
 
 ---
 
@@ -117,7 +125,32 @@ bash /workspace/scripts/deploy_llm_d.sh /workspace/llm-d-configs/values-8b.yaml
 bash /workspace/scripts/deploy_llm_d.sh /workspace/llm-d-configs/values-70b-distributed.yaml
 ```
 
-### Track 5: BYOP — Build Your Own Product
+### Track 5: Agentic Edge powered by NemoClaw 🏆 (NVIDIA GPU Prize)
+Build high-accuracy, steerable agents on top of vLLM using NemoClaw's sandboxed runtime. Three tiers:
+
+- **Starter** — vibe-code an agent UI with Cursor on the starter template
+- **Builder** — extend the multi-turn customer support reference agent with your own tools
+- **Deep Tech** — implement custom steering and benchmark latency across inference profiles
+
+```bash
+# (Tier 4 Launchable — see launchable-configs/tier4-nemoclaw/)
+# 1. Start vLLM with tool-calling enabled
+bash /workspace/start_vllm_server.sh
+
+# 2. Onboard NemoClaw against the local vLLM endpoint
+bash /workspace/onboard_nemoclaw.sh
+
+# 3. Connect to the sandbox and run the reference agent
+nemoclaw agentic-edge connect
+python3 /workspace/nemoclaw-agent/customer_support_agent.py
+
+# Deep Tech: compare inference profiles
+python3 /workspace/nemoclaw-agent/benchmarks/latency-test.py --profile vllm
+python3 /workspace/nemoclaw-agent/benchmarks/latency-test.py --profile vllm-steered
+```
+Full track guide: [demo/nemoclaw-agent/README.md](demo/nemoclaw-agent/README.md)
+
+### Track 5a (formerly Track 5): BYOP — Build Your Own Product
 ```bash
 # Start the LLM backend
 bash /workspace/start_vllm_server.sh
@@ -239,3 +272,8 @@ Run `nvidia-smi`. If it fails, your instance may still be provisioning — wait 
 - [Llama 3.1 Model Card](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct)
 - [ZeroClaw](https://github.com/zeroclaw-labs/zeroclaw)
 - [Ollama](https://ollama.com/)
+- [NemoClaw (NVIDIA)](https://github.com/NVIDIA/NemoClaw)
+- [NemoClaw (brevdev)](https://github.com/brevdev/NemoClaw)
+- [NemoClaw local inference guide](https://docs.nvidia.com/nemoclaw/latest/inference/use-local-inference.html)
+- [Brev console reference](https://docs.nvidia.com/brev/latest/guides/console-reference)
+- [One-click Launchables blog](https://developer.nvidia.com/blog/one-click-deployments-for-the-best-of-nvidia-ai-with-nvidia-launchables/)
